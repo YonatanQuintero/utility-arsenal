@@ -1,0 +1,14 @@
+{
+  "name": "utility-arsenal",
+  "version": "1.0.0",
+  "description": "A collection of versatile utility scripts for various tasks",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yonatan A Quintero R",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7"
+  }
+}
