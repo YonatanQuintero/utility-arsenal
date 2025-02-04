@@ -20,7 +20,6 @@ function encryptText(text) {
     .split('')
     .map(char => {
       let idx = ALPHABET_UPPER_CASE.indexOf(char);
-
       if (idx >= 0) {
         return CUSTOM_ALPHABET_UPPER_CASE[idx];
       }
@@ -45,7 +44,6 @@ function decryptText(text) {
     .split('')
     .map(char => {
       let idx = CUSTOM_ALPHABET_UPPER_CASE.indexOf(char);
-
       if (idx >= 0) {
         return ALPHABET_UPPER_CASE[idx];
       }
@@ -96,31 +94,64 @@ async function decryptFile(filename) {
 }
 
 /**
+ * Prints the usage instructions.
+ */
+function printUsage() {
+  console.log(`Usage: node script.js <command> <argument>
+  
+Commands:
+  encrypt <filePath>        Encrypts the contents of a file.
+  decrypt <filePath>        Decrypts the contents of a file.
+  encrypt-text <text>       Encrypts the given text (from command line).
+  decrypt-text <text>       Decrypts the given text (from command line).
+
+Examples:
+  node script.js encrypt path/to/file.txt
+  node script.js decrypt path/to/file.txt
+  node script.js encrypt-text "Hello World"
+  node script.js decrypt-text "Qitss Iwnbt"
+`);
+}
+
+/**
  * Main function: handles command line arguments.
- * Usage:
- *    node script.js encrypt path/to/file.txt
- *    node script.js decrypt path/to/file.txt
  */
 async function main() {
-  const [,, command, filePath] = process.argv;
+  const [, , command, ...args] = process.argv;
 
-  if (!command || !filePath) {
-    console.log("Usage: node script.js <encrypt|decrypt> <filePath>");
+  if (!command || !args.length) {
+    printUsage();
     process.exit(1);
   }
 
-  const absolutePath = path.resolve(filePath);
-
   try {
     if (command === "encrypt") {
-      const result = await encryptFile(absolutePath);
+      // Encrypt file
+      const filePath = path.resolve(args[0]);
+      const result = await encryptFile(filePath);
       console.log("Encrypted text:\n", result);
+
     } else if (command === "decrypt") {
-      const result = await decryptFile(absolutePath);
+      // Decrypt file
+      const filePath = path.resolve(args[0]);
+      const result = await decryptFile(filePath);
       console.log("Decrypted text:\n", result);
+
+    } else if (command === "encrypt-text") {
+      // Encrypt text directly from command line
+      const textToEncrypt = args.join(" ");
+      const result = encryptText(textToEncrypt);
+      console.log("Encrypted text:\n", result);
+
+    } else if (command === "decrypt-text") {
+      // Decrypt text directly from command line
+      const textToDecrypt = args.join(" ");
+      const result = decryptText(textToDecrypt);
+      console.log("Decrypted text:\n", result);
+
     } else {
       console.log("Unknown command:", command);
-      console.log("Usage: node script.js <encrypt|decrypt> <filePath>");
+      printUsage();
     }
   } catch (error) {
     console.error("Error:", error.message);
